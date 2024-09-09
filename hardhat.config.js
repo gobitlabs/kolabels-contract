@@ -71,7 +71,7 @@ module.exports = {
     disambiguatePaths: false,
     runOnCompile: true,
     strict: true,
-    only: [],
+    only: ["LabelFactory", "LabelNFT"],
     except: []
   }
 };
