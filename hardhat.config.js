@@ -3,6 +3,7 @@ require("hardhat-contract-sizer");
 const dotenv = require('dotenv');
 const path = require('path');
 const { vars } = require("hardhat/config");
+require("@openzeppelin/hardhat-upgrades");
 require("./task/base")
 
 const loadEnv = (network) => {
@@ -13,7 +14,7 @@ const loadEnv = (network) => {
 const getNetworkAccounts = (network) => { 
   loadEnv(network);
   const privateKeys = [];
-  const envKey = ["OWNER_KEY", "OPERATOR_KEY", "USER_KEY_1", "USER_KEY_2"]
+  const envKey = ["PROXY_ADMIN_OWNER_KEY", "FACTORY_WONER_KEY", "USER_KEY_1", "USER_KEY_2"]
   envKey.forEach(key => {
     const envValue = process.env[key];
     if (envValue) {

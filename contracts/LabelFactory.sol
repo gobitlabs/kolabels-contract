@@ -6,7 +6,12 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "./LabelNFT.sol";
 
 contract LabelFactory is Initializable, OwnableUpgradeable {
-  
+    // Define create label event
+    event LabelCreated(address indexed creator, string labelName, address labelAddress);
+
+    // Define delete label event
+    event LabelRemoved(string labelName, address labelAddress);
+    
     // Save twitter account with LabelNFT contract address list
     mapping(string => address[]) public accountToLabels;
 
@@ -33,7 +38,8 @@ contract LabelFactory is Initializable, OwnableUpgradeable {
         
         // Add new LabelNFT to accountToLabels map
         accountToLabels[twitterAccount].push(address(newLabel));
-        
+        // Trigger LabelCreated event
+        emit LabelCreated(msg.sender, labelName, address(newLabel));
         return address(newLabel);
     }
 
@@ -44,13 +50,18 @@ contract LabelFactory is Initializable, OwnableUpgradeable {
             LabelNFT label = LabelNFT(labels[i]);
             (, string memory existingName,) = label.getInfo();
             if (keccak256(abi.encodePacked(existingName)) == keccak256(abi.encodePacked(labelName))) {
-                // delete the label NFT
                 labels[i] = labels[labels.length - 1];
                 labels.pop();
+                // Trigger LabelRemoved event
+                emit LabelRemoved(labelName, address(label));
                 return;
             }
         }
-        revert("Label not found");
+        revert("Label Not Found");
+    }
+
+    function version() public pure returns (string memory) {
+        return "1.0.0";
     }
 }
 
