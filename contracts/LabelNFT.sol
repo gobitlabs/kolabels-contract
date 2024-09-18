@@ -9,14 +9,14 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 contract LabelNFT is ERC721, ERC721URIStorage, ERC721Burnable {
     uint256 private _nextNftId;
 
-    string public twitterAccount;
+    string public platform;
+    string public account;
     string public labelName;
-    address public owner;
 
-    constructor(string memory _twitterAccount, string memory _labelName) ERC721(_labelName, string(abi.encodePacked("LABEL_", _generateRandomNumber()))) {
-        twitterAccount = _twitterAccount;
+    constructor(string memory _platform, string memory _account, string memory _labelName) ERC721(_labelName, string(abi.encodePacked("LABEL_", _generateRandomNumber()))) {
+        platform = _platform;
+        account = _account;
         labelName = _labelName;
-        owner = msg.sender;
 
         // Mint the first NFT to the creator
         _mintLabel(msg.sender);
@@ -46,8 +46,8 @@ contract LabelNFT is ERC721, ERC721URIStorage, ERC721Burnable {
         _mintLabel(to);
     }
 
-    function getInfo() public view returns (string memory, string memory, address) {
-        return (twitterAccount, labelName, owner);
+    function getInfo() public view returns (string memory, string memory, string memory) {
+        return (platform, account, labelName);
     }
 
     function supportsInterface(bytes4 interfaceId)
