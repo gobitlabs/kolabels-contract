@@ -65,6 +65,15 @@ describe("testLabelFactory", function () {
       
       await expect(proxy.removePlatform("X-test")).to.be.revertedWith("Platform does not exist");
     })
+
+    it("Should forbit the normal user to add or remove platform", async () => {
+      const { labelFactoryProxy } = await loadFixture(deployFixture);
+      const [, , user1] = await ethers.getSigners();
+      const proxy = labelFactoryProxy.connect(user1);
+      
+      await expect(proxy.addPlatform("X-test")).to.be.revertedWithCustomError(proxy, "OwnableUnauthorizedAccount").withArgs(user1.address);
+      await expect(proxy.removePlatform("X-test")).to.be.revertedWithCustomError(proxy, "OwnableUnauthorizedAccount").withArgs(user1.address);
+    })
   })
 
 });
