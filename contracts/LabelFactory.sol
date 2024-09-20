@@ -6,7 +6,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "./LabelNFT.sol";
 
 contract LabelFactory is Initializable, OwnableUpgradeable {
-    event LabelCreated(address indexed creator, string platform, string account, string labelName, address labelAddress);
+    event LabelCreated(address indexed creator, string indexed platform, string indexed account, string labelName, address labelAddress);
     event LabelRemoved(string platform, string account, string labelName, address labelAddress);
     event PlatformAdded(string platform);
     event PlatformRemoved(string platform);
@@ -27,7 +27,6 @@ contract LabelFactory is Initializable, OwnableUpgradeable {
         __Ownable_init(initialOwner);
     }
 
-    // 添加平台
     function addPlatform(string memory platform) virtual public onlyOwner {
         require(!isPlatformSupported[platform], "Platform already exists");
         platforms.push(platform);
@@ -35,7 +34,6 @@ contract LabelFactory is Initializable, OwnableUpgradeable {
         emit PlatformAdded(platform);
     }
 
-    // 移除平台
     function removePlatform(string memory platform) virtual public onlyOwner {
         require(isPlatformSupported[platform], "Platform does not exist");
         for (uint i = 0; i < platforms.length; i++) {
@@ -49,7 +47,6 @@ contract LabelFactory is Initializable, OwnableUpgradeable {
         emit PlatformRemoved(platform);
     }
 
-    // 创建新的 LabelNFT 合约
     function createLabel(string memory platform, string memory account, string memory labelName) virtual public returns (address) {
         require(isPlatformSupported[platform], "Platform not supported");
         address[] storage existingLabels = accountToLabels[platform][account];
@@ -70,7 +67,6 @@ contract LabelFactory is Initializable, OwnableUpgradeable {
         return address(newLabel);
     }
 
-    // 删除 Label，只能由 owner 执行
     function removeLabel(string memory platform, string memory account, string memory labelName) virtual public onlyOwner {
         require(isPlatformSupported[platform], "Platform not supported");
         address[] storage labels = accountToLabels[platform][account];
@@ -88,7 +84,6 @@ contract LabelFactory is Initializable, OwnableUpgradeable {
         revert("Label not found");
     }
 
-    // 获取支持的平台列表
     function getSupportedPlatforms() virtual public view returns (string[] memory) {
         return platforms;
     }
