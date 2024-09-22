@@ -5,6 +5,7 @@ const path = require('path');
 const { vars } = require("hardhat/config");
 require("@openzeppelin/hardhat-upgrades");
 require("./task/base")
+require("./task/func")
 
 const loadEnv = (network) => {
   const envPath = path.resolve(__dirname, `.env.${network}`);
