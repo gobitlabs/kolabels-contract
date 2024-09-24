@@ -108,15 +108,15 @@ describe("testLabelFactory", function () {
       }
     })
 
-    afterEach(async () => {
-      const [, factoryOwner] = await ethers.getSigners();
-      const proxy = labelFactoryProxy.connect(factoryOwner);
-      await proxy.removeLabel(testPlatformName, testAccount, testLabelName)
-    })
+    // afterEach(async () => {
+    //   const [, factoryOwner] = await ethers.getSigners();
+    //   const proxy = labelFactoryProxy.connect(factoryOwner);
+    //   await proxy.removeLabel(testPlatformName, testAccount, testLabelName)
+    // })
 
-    it("Should create a new label NFT success by normal user", async () => {
-      const [, , user1] = await ethers.getSigners();
-      const proxy = labelFactoryProxy.connect(user1);
+    it("Should create and remove a label NFT success", async () => {
+      const [, factoryOwner, user1] = await ethers.getSigners();
+      let proxy = labelFactoryProxy.connect(user1);
 
       await proxy.createLabel(testPlatformName, testAccount, testLabelName)
       const labelnfts = await proxy.getLabelsByPlatformAndAccount(testPlatformName, testAccount)
@@ -126,6 +126,31 @@ describe("testLabelFactory", function () {
       let labelnft = LabelNFT.attach(lastlabel)
       const label = await labelnft.getInfo()
       expect(label[2]).to.equal(testLabelName);
+      const balance = await labelnft.balanceOf(user1)
+      expect(balance).to.equal(1)
+
+      proxy = labelFactoryProxy.connect(factoryOwner);
+      await proxy.removeLabel(testPlatformName, testAccount, testLabelName)
+      const newlabelnfts = await proxy.getLabelsByPlatformAndAccount(testPlatformName, testAccount)
+      expect(labelnfts.length-1).to.equal(newlabelnfts.length)
+    })
+
+    it("Shouldn't create the same label twice", async () => {
+      const [, factoryOwner, user1] = await ethers.getSigners();
+      let proxy = labelFactoryProxy.connect(user1);
+
+      await proxy.createLabel(testPlatformName, testAccount, testLabelName)
+      await expect(proxy.createLabel(testPlatformName, testAccount, testLabelName)).to.be.revertedWith("Label already exists");
+
+      proxy = labelFactoryProxy.connect(factoryOwner);
+      await proxy.removeLabel(testPlatformName, testAccount, testLabelName)
+    })
+
+    it("Shouldn't remove a label which not exist", async () => {
+      const [, factoryOwner] = await ethers.getSigners();
+      const proxy = labelFactoryProxy.connect(factoryOwner);
+
+      await expect(proxy.removeLabel(testPlatformName, testAccount, testLabelName)).to.be.revertedWith("Label not found");
     })
     
   })
