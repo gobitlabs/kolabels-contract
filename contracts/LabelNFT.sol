@@ -17,9 +17,6 @@ contract LabelNFT is ERC721, ERC721URIStorage, ERC721Burnable {
         platform = _platform;
         account = _account;
         labelName = _labelName;
-
-        // Mint the first NFT to the creator
-        _mintLabel(msg.sender);
     }
 
     function _generateRandomNumber() private view returns (string memory) {
