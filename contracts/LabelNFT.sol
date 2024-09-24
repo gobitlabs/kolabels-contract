@@ -4,9 +4,10 @@ pragma solidity ^0.8.24;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
 // Label NFT Contract
-contract LabelNFT is ERC721, ERC721URIStorage, ERC721Burnable {
+contract LabelNFT is ERC721, ERC721Enumerable, ERC721URIStorage, ERC721Burnable {
     uint256 private _nextNftId;
 
     string public platform;
@@ -30,6 +31,21 @@ contract LabelNFT is ERC721, ERC721URIStorage, ERC721Burnable {
         return tokenId;
     }
 
+    function _update(address to, uint256 tokenId, address auth)
+        internal
+        override(ERC721, ERC721Enumerable)
+        returns (address)
+    {
+        return super._update(to, tokenId, auth);
+    }
+
+    function _increaseBalance(address acnt, uint128 value)
+        internal
+        override(ERC721, ERC721Enumerable)
+    {
+        super._increaseBalance(acnt, value);
+    }
+
     function tokenURI(uint256 tokenId)
         public
         view
@@ -50,7 +66,7 @@ contract LabelNFT is ERC721, ERC721URIStorage, ERC721Burnable {
     function supportsInterface(bytes4 interfaceId)
         public
         view
-        override(ERC721, ERC721URIStorage)
+        override(ERC721, ERC721URIStorage, ERC721Enumerable)
         returns (bool)
     {
         // keccak256(abi.encode(uint256(keccak256("mintLabel|getInfo"))));
