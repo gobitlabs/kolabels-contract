@@ -85,7 +85,7 @@ describe("testLabelFactory", function () {
     })
   })
 
-  describe("Label function", function () {
+  describe("Label Factory function", function () {
 
     let labelFactoryProxy;
 
@@ -154,5 +154,59 @@ describe("testLabelFactory", function () {
     })
     
   })
+
+  describe("Label NFT function", function () {
+
+    let labelFactoryProxy;
+    let testlabelnft;
+
+    before(async () => {
+      const deployed = await loadFixture(deployFixture);
+      labelFactoryProxy = deployed.labelFactoryProxy;
+      const [, factoryOwner, user1] = await ethers.getSigners();
+
+      let proxy = labelFactoryProxy.connect(factoryOwner);
+      // add the platform
+      await proxy.addPlatform(testPlatformName)
+
+      proxy = labelFactoryProxy.connect(user1);
+      await proxy.createLabel(testPlatformName, testAccount, testLabelName)
+      const labelnfts = await proxy.getLabelsByPlatformAndAccount(testPlatformName, testAccount)
+      testlabelnft = labelnfts[labelnfts.length-1]
+    })
+
+    after(async () => {
+      const [, factoryOwner] = await ethers.getSigners();
+      const proxy = labelFactoryProxy.connect(factoryOwner);
+      await proxy.removeLabel(testPlatformName, testAccount, testLabelName)
+      const supportX = await proxy.isPlatformSupported(testPlatformName);
+      if (supportX) {
+        // clear the platform
+        await proxy.removePlatform(testPlatformName)
+      }
+    })
+
+    it("Should mint a new label", async function () {
+      const [, , , user2] = await ethers.getSigners();
+
+      const LabelNFT = await ethers.getContractFactory("LabelNFT", user2);
+      let labelnft = LabelNFT.attach(testlabelnft)
+      await labelnft.mintLabel(user2)
+      const balance = await labelnft.balanceOf(user2)
+      expect(balance).to.equal(1)
+    });
+
+    it("Should mint multiple labels", async function () {
+      const [, , user1] = await ethers.getSigners();
+
+      const LabelNFT = await ethers.getContractFactory("LabelNFT", user1);
+      let labelnft = LabelNFT.attach(testlabelnft)
+      await labelnft.mintLabel(user1)
+      await labelnft.mintLabel(user1)
+      const balance = await labelnft.balanceOf(user1)
+      expect(balance).to.equal(3)
+    });
+
+  });
 
 });
