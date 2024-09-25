@@ -1,6 +1,20 @@
 require("@nomicfoundation/hardhat-toolbox");
 const DeployModule = require("../ignition/modules/deploy")
 
+function getSignerByPrivateKey(privateKey) {
+  const provider = hre.ethers.provider;
+  return new ethers.Wallet(privateKey, provider)
+}
+
+async function getOptionalSigner(privateKey) {
+  if (privateKey) {
+    return getSignerByPrivateKey(privateKey)
+  } else {
+    const [, , user1] = await ethers.getSigners();
+    return user1
+  }
+}
+
 task("addPlatform", "Add a new platform")
   .addParam("platform", "The new platform name")
   .setAction(async args => {
@@ -36,10 +50,12 @@ task("createLabel", "Create a new label for the specified account")
   .addParam("account", "The account name")
   .addParam("platform", "The platform of the account")
   .addParam("labelname", "The new label name")
+  .addOptionalParam("owner", "The owner's private key")
   .setAction(async args => {
-    const [, , user1] = await ethers.getSigners();
     const {labelFactoryProxy} = await ignition.deploy(DeployModule);
-    const proxy = labelFactoryProxy.connect(user1);
+    const labelOwner = await getOptionalSigner(args.owner)
+    console.log("owner", labelOwner)
+    const proxy = labelFactoryProxy.connect(labelOwner);
 
     await proxy.createLabel(args.platform, args.account, args.labelname)
     console.log("Create label success")
@@ -47,7 +63,7 @@ task("createLabel", "Create a new label for the specified account")
     const lastlabel = labelnfts[labelnfts.length-1]
     console.log("The new label contract address is: ", lastlabel)
 
-    const LabelNFT = await ethers.getContractFactory("LabelNFT", user1);
+    const LabelNFT = await ethers.getContractFactory("LabelNFT", labelOwner);
     let labelnft = LabelNFT.attach(lastlabel)
     const label = await labelnft.getInfo()
     console.log("The label platform:", label[0])
@@ -114,10 +130,10 @@ task("listLabelIds", "List all of the labels of the specified owner")
 task("mintLabel", "Mint a new label in the specified Label NFT")
   .addParam("to", "The mint target address")
   .addParam("label", "The label NFT contract address")
+  .addOptionalParam("owner", "The owner's private key")
   .setAction(async args => {
-    const [, , user1] = await ethers.getSigners();
-
-    const LabelNFT = await ethers.getContractFactory("LabelNFT", user1);
+    const labelOwner = await getOptionalSigner(args.owner)
+    const LabelNFT = await ethers.getContractFactory("LabelNFT", labelOwner);
     let labelnft = LabelNFT.attach(args.label)
     try {
       await labelnft.mintLabel(args.to)
