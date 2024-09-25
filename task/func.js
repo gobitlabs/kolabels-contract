@@ -73,7 +73,7 @@ task("removeLabel", "Remove the specified label")
     }
   })
 
-task("listLabels", "List all of the labels of the specified account")
+task("listLabelNfts", "List all of the label NFTs of the specified account")
   .addParam("account", "The account name")
   .addParam("platform", "The platform of the account")
   .setAction(async args => {
@@ -88,8 +88,41 @@ task("listLabels", "List all of the labels of the specified account")
       let labelnft = LabelNFT.attach(nft)
       const label = await labelnft.getInfo()
       console.log(`==================== Label ${index +1} =====================`)
+      console.log("The label nft address: ", nft)
       console.log("The label platform:", label[0])
       console.log("The account:", label[1])
       console.log("The label name:", label[2])
+    }
+  })
+
+task("listLabelIds", "List all of the labels of the specified owner")
+  .addParam("owner", "The owner of the Label NFT")
+  .addParam("label", "The label NFT contract address")
+  .setAction(async args => {
+    const [, , user1] = await ethers.getSigners();
+
+    const LabelNFT = await ethers.getContractFactory("LabelNFT", user1);
+    let labelnft = LabelNFT.attach(args.label)
+    const ids = await labelnft.tokensOfOwner(args.owner)
+    console.log(`==================== TokenID list of ${args.label} owned by ${args.owner} =====================`)
+    for (let index = 0; index < ids.length; index++) {
+      const id = ids[index];
+      console.log(`${index+1}: ${id}`)
+    }
+  })
+
+task("mintLabel", "Mint a new label in the specified Label NFT")
+  .addParam("to", "The mint target address")
+  .addParam("label", "The label NFT contract address")
+  .setAction(async args => {
+    const [, , user1] = await ethers.getSigners();
+
+    const LabelNFT = await ethers.getContractFactory("LabelNFT", user1);
+    let labelnft = LabelNFT.attach(args.label)
+    try {
+      await labelnft.mintLabel(args.to)
+      console.log("Mint label success")
+    } catch (e) {
+      console.error("Mint failed")
     }
   })
