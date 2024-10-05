@@ -186,6 +186,15 @@ describe("testLabelFactory", function () {
       }
     })
 
+    it("Should be the right label owner", async function () {
+      const [, , user1] = await ethers.getSigners();
+      const LabelNFT = await ethers.getContractFactory("LabelNFT", user1);
+      let labelnft = LabelNFT.attach(testlabelnft)
+
+      const nftOwner = await labelnft.owner()
+      expect(nftOwner).to.equal(user1)
+    })
+
     it("Should mint a new label", async function () {
       const [, , , user2] = await ethers.getSigners();
 
@@ -206,6 +215,18 @@ describe("testLabelFactory", function () {
       const balance = await labelnft.balanceOf(user1)
       expect(balance).to.equal(3)
     });
+
+    it("Should set the right extro URL", async function () {
+      const [, , user1] = await ethers.getSigners();
+
+      const LabelNFT = await ethers.getContractFactory("LabelNFT", user1);
+      let labelnft = LabelNFT.attach(testlabelnft)
+
+      const url = "https://xxx.com/abc"
+      await labelnft.setExtroUrl(url)
+      const extroUrl = await labelnft.extroUrl()
+      expect(extroUrl).to.equal(url)
+    })
 
   });
 

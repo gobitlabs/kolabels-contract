@@ -5,16 +5,18 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 // Label NFT Contract
-contract LabelNFT is ERC721, ERC721Enumerable, ERC721URIStorage, ERC721Burnable {
+contract LabelNFT is ERC721, ERC721Enumerable, ERC721URIStorage, ERC721Burnable, Ownable {
     uint256 private _nextNftId;
 
     string public platform;
     string public account;
     string public labelName;
+    string public extroUrl;
 
-    constructor(string memory _platform, string memory _account, string memory _labelName) ERC721(_labelName, string(abi.encodePacked("LABEL_", _generateRandomNumber()))) {
+    constructor(string memory _platform, string memory _account, string memory _labelName, address initialOwner) ERC721(_labelName, string(abi.encodePacked("LABEL_", _generateRandomNumber()))) Ownable(initialOwner) {
         platform = _platform;
         account = _account;
         labelName = _labelName;
@@ -57,6 +59,10 @@ contract LabelNFT is ERC721, ERC721Enumerable, ERC721URIStorage, ERC721Burnable 
 
     function mintLabel(address to) public {
         _mintLabel(to);
+    }
+
+    function setExtroUrl(string memory url) external onlyOwner {
+        extroUrl = url;
     }
 
     function tokensOfOwner(address _owner) external view returns (uint256[] memory) {

@@ -64,7 +64,7 @@ contract LabelFactory is Initializable, OwnableUpgradeable {
             }
         }
         
-        LabelNFT newLabel = new LabelNFT(platform, account, labelName);
+        LabelNFT newLabel = new LabelNFT(platform, account, labelName, msg.sender);
         // Mint the first label to current msg.sender
         newLabel.mintLabel(msg.sender);
 
