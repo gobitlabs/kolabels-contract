@@ -108,6 +108,7 @@ task("listLabelNfts", "List all of the label NFTs of the specified account")
       console.log("The label platform:", label[0])
       console.log("The account:", label[1])
       console.log("The label name:", label[2])
+      console.log("The extra url is:", label[3])
     }
   })
 

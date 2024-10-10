@@ -56,7 +56,7 @@ contract LabelFactory is Initializable, OwnableUpgradeable {
         address[] storage existingLabels = accountToLabels[platformBytes][accountBytes];
         for (uint i = 0; i < existingLabels.length; i++) {
             LabelNFT existingLabel = LabelNFT(existingLabels[i]);
-            (string memory existingPlatform, string memory existingAccount, string memory existingName) = existingLabel.getInfo();
+            (string memory existingPlatform, string memory existingAccount, string memory existingName,) = existingLabel.getInfo();
             if (keccak256(abi.encodePacked(existingPlatform)) == platformBytes &&
               keccak256(abi.encodePacked(existingAccount)) == accountBytes &&
               keccak256(abi.encodePacked(existingName)) == labelNameBytes) {
@@ -81,7 +81,7 @@ contract LabelFactory is Initializable, OwnableUpgradeable {
         address[] storage labels = accountToLabels[platformBytes][accountBytes];
         for (uint i = 0; i < labels.length; i++) {
             LabelNFT label = LabelNFT(labels[i]);
-            (string memory existingPlatform, string memory existingAccount, string memory existingName) = label.getInfo();
+            (string memory existingPlatform, string memory existingAccount, string memory existingName,) = label.getInfo();
             if (keccak256(abi.encodePacked(existingPlatform)) == platformBytes &&
               keccak256(abi.encodePacked(existingAccount)) == accountBytes &&
               keccak256(abi.encodePacked(existingName)) == labelNameBytes) {

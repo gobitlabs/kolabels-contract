@@ -74,8 +74,8 @@ contract LabelNFT is ERC721, ERC721Enumerable, ERC721URIStorage, ERC721Burnable,
         return tokens;
     }
 
-    function getInfo() public view returns (string memory, string memory, string memory) {
-        return (platform, account, labelName);
+    function getInfo() public view returns (string memory, string memory, string memory, string memory) {
+        return (platform, account, labelName, extroUrl);
     }
 
     function supportsInterface(bytes4 interfaceId)
