@@ -13,13 +13,11 @@ contract LabelNFT is ERC721, ERC721Enumerable, ERC721URIStorage, ERC721Burnable,
 
     string public platform;
     string public account;
-    string public labelName;
     string public extroUrl;
 
     constructor(string memory _platform, string memory _account, string memory _labelName, address initialOwner) ERC721(_labelName, string(abi.encodePacked("LABEL_", _generateRandomNumber()))) Ownable(initialOwner) {
         platform = _platform;
         account = _account;
-        labelName = _labelName;
     }
 
     function _generateRandomNumber() private view returns (string memory) {
@@ -75,7 +73,7 @@ contract LabelNFT is ERC721, ERC721Enumerable, ERC721URIStorage, ERC721Burnable,
     }
 
     function getInfo() public view returns (string memory, string memory, string memory, string memory) {
-        return (platform, account, labelName, extroUrl);
+        return (platform, account, name(), extroUrl);
     }
 
     function supportsInterface(bytes4 interfaceId)
