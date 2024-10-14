@@ -1,6 +1,6 @@
 {
-  "DeployModule#LabelFactoryImpl": "0x0F3C6Dd7A4dF7a44c31B36df8D9b2A02eAe3dE5E",
-  "DeployModule#TransparentUpgradeableProxy": "0xdc4641e876E14ebc50384e4fb0d2c527a183210C",
-  "DeployModule#LabelFactory": "0xdc4641e876E14ebc50384e4fb0d2c527a183210C",
-  "DeployModule#ProxyAdmin": "0x692b93579c23773ee4F8FDCA2E10b363895e3F04"
+  "DeployModule#LabelFactoryImpl": "0xEA0608338eff301d2b080a6bCe4Edcf7904Ca506",
+  "DeployModule#TransparentUpgradeableProxy": "0xaB026E4947365321E27df21a5A550FB3B95fd2F5",
+  "DeployModule#LabelFactory": "0xaB026E4947365321E27df21a5A550FB3B95fd2F5",
+  "DeployModule#ProxyAdmin": "0x531731dD0364F2278e32E9FF65b7Eba4ae6Fca42"
 }

@@ -83,7 +83,7 @@ contract LabelNFT is ERC721, ERC721Enumerable, ERC721URIStorage, ERC721Burnable,
         returns (bool)
     {
         // keccak256(abi.encode(uint256(keccak256("mintLabel|getInfo"))));
-        bytes32 id = 0xb97c06ce1a27418b31f7474f7bf31fc55ebaf5a4de64b614047e62de6d0cb336;
+        bytes4 id = 0xb97c06ce;
         return interfaceId == id || super.supportsInterface(interfaceId);
     }
 }
