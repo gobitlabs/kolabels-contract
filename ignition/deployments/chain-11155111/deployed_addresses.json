@@ -1,0 +1,6 @@
+{
+  "DeployModule#LabelFactoryImpl": "0x0F3C6Dd7A4dF7a44c31B36df8D9b2A02eAe3dE5E",
+  "DeployModule#TransparentUpgradeableProxy": "0xdc4641e876E14ebc50384e4fb0d2c527a183210C",
+  "DeployModule#LabelFactory": "0xdc4641e876E14ebc50384e4fb0d2c527a183210C",
+  "DeployModule#ProxyAdmin": "0x692b93579c23773ee4F8FDCA2E10b363895e3F04"
+}
